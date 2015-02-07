@@ -1,5 +1,6 @@
 var itemTemplate = $('#templates .item')
-var list         = $('#list')
+var list = $('#list')
+var form = $('#add-form')
 var addItemToPage = function(itemData) {
   var item = itemTemplate.clone()
   item.attr('data-id',itemData.id)
@@ -8,6 +9,7 @@ var addItemToPage = function(itemData) {
     item.addClass('completed')
   }
   list.append(item)
+  form.find('#create').val("")
 }
 var loadRequest = $.ajax({
   type: 'GET',
@@ -15,7 +17,6 @@ var loadRequest = $.ajax({
 })
 loadRequest.done(function(dataFromServer) {
   var itemsData = dataFromServer.items
-
   itemsData.forEach(function(itemData) {
     addItemToPage(itemData)
   })
@@ -24,11 +25,10 @@ $('#add-form').on('submit', function(event) {
   event.preventDefault()
   itemDescription = event.target.itemDescription.value
   var creationRequest = $.ajax({
-     type: 'POST',
-     url: "https://listalous.herokuapp.com/lists/jchitta/items",
-     data: { description: itemDescription, completed: false }
-   })
-
+    type: 'POST',
+    url: "https://listalous.herokuapp.com/lists/jchitta/items",
+    data: { description: itemDescription, completed: false }
+  })
   creationRequest.done(function(itemDataFromServer) {
     addItemToPage(itemDataFromServer)
   })
@@ -61,6 +61,3 @@ $('#list').on('click', '.delete-button', function(event) {
     $(item).remove()
   })
 })
-
-
-
